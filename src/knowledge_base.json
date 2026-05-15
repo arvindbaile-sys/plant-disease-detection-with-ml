@@ -1,0 +1,19 @@
+{
+"Tomato___Late_blight": {
+"symptoms": ["brown lesions", "leaf blight", "fruit rot"],
+"remedies": [
+"Remove and destroy affected leaves/fruits.",
+"Avoid overhead irrigation; water early morning.",
+"Use fungicides containing chlorothalonil or copper-based fungicides as per label.",
+"Ensure crop rotation and avoid planting tomatoes after potatoes."
+]
+},
+"Apple___Apple_scab": {
+"symptoms": ["dark olive lesions", "defoliation"],
+"remedies": [
+"Prune for air circulation.",
+"Apply appropriate fungicide sprays in early season.",
+"Collect and destroy fallen leaves."
+]
+}
+}

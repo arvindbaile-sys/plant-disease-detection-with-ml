@@ -1,0 +1,151 @@
+/* 💡 ही style.css फाईल तुमच्या index.html आणि login.html (जर तुम्ही तिथे link केली असेल तर) साठी आहे. */
+
+body {  
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    /* येथे फक्त fall-back color/style ठेवा. Jinja code index.html मध्ये हलवा. */
+    background-color: #f0fff0; 
+    text-align: center;
+    min-height: 100vh;
+}
+
+/* 🌿 Navbar */
+.navbar {
+    background: #2e7d32;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 30px;
+    color: white;
+}
+.navbar .logo {
+    font-size: 20px;
+    font-weight: bold;
+}
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 25px;
+}
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 16px;
+}
+.nav-links a:hover {
+    text-decoration: underline;
+}
+
+/* 🌾 Main Content */
+.container {
+    margin-top: 40px;
+    /* 💡 नवीन: फुटरसाठी खाली पुरेशी जागा सोडली */
+    padding-bottom: 140px; 
+}
+input[type="file"] {
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+button {
+    background-color: #388e3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+button:hover {
+    background-color: #2e7d32;
+}
+
+/* 🔍 Disease Result Box */
+.output {
+    background-color: rgba(255, 255, 255, 0.95); 
+    display: inline-block;
+    padding: 20px 30px;
+    margin-top: 25px;
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); 
+    text-align: left;
+    max-width: 700px;
+}
+
+.output h3 {
+    color: #1b5e20;
+    font-size: 20px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+/* 💊 Solution Info Box */
+.solution {
+    background-color: rgba(240, 255, 240, 0.98); 
+    border: 2px solid #66bb6a; 
+    border-radius: 15px;
+    padding: 20px;
+    margin: 20px auto;
+    max-width: 700px;
+    text-align: left;
+    box-shadow: 0 4px 15px rgba(0, 100, 0, 0.2);
+}
+
+.solution p {
+    font-size: 15px;
+    color: #333;
+    margin: 8px 0;
+    line-height: 1.5;
+}
+
+.solution p b {
+    color: #1b5e20;
+    font-weight: bold;
+    display: inline-block;
+    min-width: 120px;
+}
+
+/* 🖼️ Uploaded Image Result */
+.result {
+    margin: 20px auto;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 15px;
+    border-radius: 10px;
+    max-width: 300px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.result img {
+    border-radius: 8px;
+    max-width: 100%;
+    height: auto;
+    border: 2px solid #4caf50;
+    margin-top: 10px;
+}
+
+/* 📜 Footer */
+footer {
+    background-color: #1b5e20;
+    color: white;
+    padding: 20px 30px;
+    text-align: center;
+    width: 100%;
+    box-sizing: border-box;
+    /* ✅ फुटर स्क्रीनच्या तळाशी चिकटलेला ठेवण्यासाठी (Fixed) */
+    position: fixed; 
+    bottom: 0;
+    z-index: 10; 
+}
+
+.social-icons img {
+    width: 30px;
+    margin: 0 10px;
+    vertical-align: middle;
+}
+
+h2 {
+    color: white; 
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}

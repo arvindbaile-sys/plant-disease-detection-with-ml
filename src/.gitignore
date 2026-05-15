@@ -1,0 +1,24 @@
+# मोठे व्हिडिओ
+*.mp4
+*.MP4
+src/static/video/
+
+# मॉडेल फाइल्स
+*.h5
+*.keras
+models/
+
+# डेटासेट
+data/
+dataset/
+
+# Python
+__pycache__/
+*.pyc
+venv/
+env/
+
+# लॉग
+history.json
+user_history.json
+.env

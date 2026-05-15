@@ -1,0 +1,183 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us | Plant Disease Detection</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+  <style>
+    body {
+      background: none;
+      overflow: hidden;
+    }
+
+    .container .video video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .contact-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 80vh;
+    }
+
+    .contact-card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 40px;
+      width: 380px;
+      border-radius: 20px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 8px 32px rgba(173, 170, 170, 0.3);
+      animation: fadeIn 1.2s ease;
+      color: white;
+      background-image: url("{{ url_for('static', filename='bg_image/contact.png') }}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      margin-top: -120px;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .contact-card h2 {
+      text-align: center;
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    .contact-card input, .contact-card textarea {
+      width: 100%;
+      margin-bottom: 15px;
+      padding: 12px;
+      border: none;
+      outline: none;
+      border-radius: 10px;
+      background: rgba(167, 162, 162, 0.25);
+      color: #fff;
+      font-size: 15px;
+      transition: 0.3s;
+    }
+
+    .contact-card input:focus, .contact-card textarea:focus {
+      background: rgba(255, 255, 255, 0.4);
+    }
+
+    .contact-card button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #00c46a;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .contact-card button:hover {
+      background: #009d56;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      margin-bottom: 0px;
+    }
+  </style>
+</head>
+<body>
+  <!-- 🌿 Navigation Bar -->
+  <nav class="navbar">
+    <div class="logo">🌱 वनस्पती रोग शोधणे</div>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('home') }}">मुख्यपृष्ठ</a></li>
+      <li><a href="{{ url_for('index') }}">अंदाज लावा</a></li>
+      <li><a href="{{ url_for('contact') }}">आमच्याशी संपर्क साधा</a></li>
+      <li><a href="{{ url_for('login') }}">प्रवेश करा</a></li>
+    </ul>
+  </nav>
+
+  <!-- 🎥 Background Video -->
+  <div class="container">
+    <div class="video">
+      <video autoplay loop muted plays-inline class="back-video">
+        <source src="{{ url_for('static', filename='video/bg_video.mp4') }}" type="video/mp4">
+      </video>
+    </div>
+
+  <!-- 💌 Contact Form -->
+  <div class="contact-container">
+    <div class="contact-card">
+      <h2>आमच्याशी संपर्क साधा.</h2>
+      <form id="contact-form">
+        <input type="text" id="name" placeholder="तुमचं नाव." required />
+        <input type="email" id="email" placeholder="तुमचा ईमेल." required />
+        <textarea id="message" rows="4" placeholder="तुमचा संदेश..." required></textarea>
+        <button type="submit">संदेश पाठवा.</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 🌸 Footer -->
+  <footer>
+    <p>नवीनतम माहितीसाठी सोशल मीडियावर आम्हाला फॉलो करा:</p>
+    <div class="social-icons">
+      <a href="https://www.instagram.com/me_ek_shetkari07?igsh=YmhoY2Zqb2pxdjU5" target="_blank"><img src="{{ url_for('static', filename='icons/instagram.png') }}" alt="Instagram"></a>
+      <a href="https://youtube.com/@agventureurbanfarming?si=AF-t77rHaACI4lJz" target="_blank"><img src="{{ url_for('static', filename='icons/youtube.png') }}" alt="YouTube"></a>
+      <a href="https://www.facebook.com/groups/plant.health.pests.and.diseases/" target="_blank"><img src="{{ url_for('static', filename='icons/facebook.png') }}" alt="Facebook"></a>
+    </div>
+  </footer>
+
+  <!-- ✉️ EmailJS Script -->
+  <script>
+    (function(){
+      emailjs.init("cGbVdXiJnT4WgIDku"); // 🌸 तुझा Public Key
+    })();
+
+    document.getElementById("contact-form").addEventListener("submit", function(event){
+      event.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const message = document.getElementById("message").value;
+
+      // 🌿 Step 1: तुला मेल पाठवला जाईल
+      emailjs.send("service_gp2aapy", "template_7kqevfe", {
+        from_name: name,
+        from_email: email,
+        message: message,
+        date: new Date().toLocaleString()
+      })
+      .then(() => {
+        // 🌸 Step 2: User ला Auto-Reply जाईल
+        return emailjs.send("service_gp2aapy", "template_srwhwxp", {
+          to_name: name,
+          to_email: email,
+          from_name: "Arvind Baile"
+        });
+      })
+      .then(() => {
+        alert("संदेश यशस्वीरित्या पाठवला! 💌");
+        document.getElementById("contact-form").reset();
+      })
+      .catch((error) => {
+        alert("संदेश पाठविण्यात अयशस्वी ❌ " + error.text);
+      });
+    });
+  </script>
+</body>
+</html>

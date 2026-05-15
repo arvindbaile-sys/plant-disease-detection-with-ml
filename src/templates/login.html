@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3D फ्लिप लॉगिन आणि नोंदणी फॉर्म.</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    .navbar {
+      background: #2e7d32;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 23.5px 30px;
+      color: white;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .navbar .logo {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 25px;
+      margin: 0;
+      padding: 0;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .nav-links a:hover {
+      text-decoration: underline;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background-color: #fff;
+      color: #2e7d32;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-right: 8px;
+      overflow: hidden;
+    }
+
+    .user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background: white;
+      color: #333;
+      border-radius: 4px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      width: 180px;
+      display: none;
+      z-index: 100;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-menu a {
+      display: block;
+      padding: 10px 15px;
+      color: #333;
+      text-decoration: none;
+      border-bottom: 1px solid #eee;
+    }
+
+    .dropdown-menu a:hover {
+      background-color: #f5f5f5;
+    }
+
+    .dropdown-menu a:last-child {
+      border-bottom: none;
+    }
+
+    footer {
+      margin-top: 49px;
+      background-color: #1b5e20;
+      color: white;
+      padding: 30px 30px ;
+      text-align: center;
+    }
+
+    .social-icons img {
+      width: 30px;
+      margin: 0 10px;
+      vertical-align: middle;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 100%;
+      height: 65vh;
+      font-family: sans-serif;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .card {
+      width: 700px;
+      height: 300px;
+      box-shadow: 0 0 40px 20px rgba(0,0,0,0.26);
+      perspective: 1000px;
+    }
+
+    .inner-box {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 1s;
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-position: center;
+      background-size: cover;
+      background-color: #2e7d32;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      border-radius: 10px;
+      padding: 30px;
+      box-sizing: border-box;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background-image: url("{{ url_for('static', filename='bg_image/login.png') }}");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+    }
+
+    .card h2 {
+      font-weight: normal;
+      font-size: 24px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .input-box {
+      width: 180px;
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid #fff;
+      height: 32px;
+      border-radius: 20px;
+      padding: 0 10px;
+      box-sizing: border-box;
+      outline: none;
+      text-align: center;
+      color: #fff;
+    }
+
+    ::placeholder {
+      color: #fff;
+      font-size: 12px;
+    }
+
+    button {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid #fff;
+      height: 32px;
+      font-size: 12px;
+      border-radius: 20px;
+      padding: 0 15px;
+      box-sizing: border-box;
+      outline: none;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .submit-btn {
+      position: relative;
+      margin-top: 10px;
+      width: 150px;
+    }
+
+    .submit-btn::after {
+      content: '\27a4';
+      color: #333;
+      line-height: 32px;
+      font-size: 17px;
+      height: 32px;
+      width: 32px;
+      border-radius: 50%;
+      background: #fff;
+      position: absolute;
+      right: -1px;
+      top: -1px;
+    }
+
+    span {
+      font-size: 13px;
+      margin-left: 10px;
+    }
+
+    .card .btn {
+      margin-top: 15px;
+    }
+
+    .card a {
+      color: #fff;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .container .video video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 120%;
+      width: 100%;
+      object-fit: cover;
+      z-index: -1;
+    }
+
+    .remember-row {
+      width: 100%;
+      text-align: center;
+      margin: 5px 0;
+    }
+
+    .error-message {
+      color: #ffcccb;
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    .success-message {
+      color: #90ee90;
+      font-size: 12px;
+      margin-top: 5px;
+      display: none;
+    }
+
+    /* Update Password Modal Styles */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, #2e7d32, #1b5e20);
+      padding: 30px;
+      border-radius: 15px;
+      width: 400px;
+      max-width: 90%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      color: white;
+      position: relative;
+    }
+
+    .modal-header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .modal-header h2 {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: white;
+    }
+
+    .modal-header p {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      height: 40px;
+      border-radius: 20px;
+      padding: 0 15px;
+      box-sizing: border-box;
+      outline: none;
+      color: white;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+      background: rgba(255, 255, 255, 0.25);
+      border-color: white;
+    }
+
+    .form-input::placeholder {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .btn-cancel {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      height: 40px;
+      border-radius: 20px;
+      padding: 0 25px;
+      color: white;
+      cursor: pointer;
+      flex: 1;
+      transition: all 0.3s ease;
+    }
+
+    .btn-cancel:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    .btn-update {
+      background: white;
+      border: none;
+      height: 40px;
+      border-radius: 20px;
+      padding: 0 25px;
+      color: #2e7d32;
+      font-weight: bold;
+      cursor: pointer;
+      flex: 1;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .btn-update:hover {
+      background: #f0f0f0;
+      transform: translateY(-2px);
+    }
+
+    .password-strength {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 2px;
+      margin-top: 5px;
+      overflow: hidden;
+    }
+
+    .password-strength-bar {
+      height: 100%;
+      width: 0%;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .password-weak { background: #ff4757; width: 33%; }
+    .password-medium { background: #ffa502; width: 66%; }
+    .password-strong { background: #2ed573; width: 100%; }
+
+    .close-modal {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      color: white;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .input-with-icon {
+      position: relative;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+    }
+
+    /* History Item Styles - Changed to better accommodate image and text side-by-side */
+    .history-item {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-left: 4px solid #4caf50;
+        /* Flex properties added here for card look */
+        display: flex; 
+        align-items: center; 
+        gap: 15px;
+    }
+
+    .history-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .history-disease {
+      font-weight: bold;
+      color: white;
+      font-size: 16px;
+    }
+
+    .history-date {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 12px;
+    }
+
+    .history-confidence {
+      color: #4caf50;
+      font-size: 14px;
+      margin-bottom: 5px;
+      display: none; /* Confidence is N/A, so hiding it */
+    }
+    
+    .history-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0; /* Ensures the image doesn't shrink */
+      margin-top: 0; /* Reset margin */
+    }
+
+    .clear-history-btn {
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 15px;
+      cursor: pointer;
+      font-size: 12px;
+      margin-top: 10px;
+    }
+
+    .clear-history-btn:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="logo">🌱 वनस्पती रोग शोधणे</div>
+    <ul class="nav-links">
+      <li><a href="{{ url_for('home') }}">मुख्यपृष्ठ</a></li>
+      <li><a href="{{ url_for('index') }}">अंदाज लावा</a></li>
+      <li><a href="{{ url_for('contact') }}">आमच्याशी संपर्क साधा</a></li>
+      <li id="login-nav-item"><a href="#" onclick="showLoginForm()">प्रवेश करा</a></li>
+      <li id="user-profile-nav-item" class="user-profile" style="display: none;">
+        <div class="user-avatar" id="user-avatar">
+          </div>
+        <span id="user-name">User</span>
+        <div class="dropdown-menu" id="dropdown-menu">
+          <a href="#" onclick="showUpdatePassword()"><i class="fas fa-key"></i> गुप्त शब्द अथवा संख्यां बदला</a>
+          <a href="#" onclick="showHistory()"><i class="fas fa-history"></i> इतिहास</a>
+          <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> बाहेर पडा</a>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="container">
+    <div class="video">
+      <video autoplay loop muted plays-inline class="back-video">
+        <source src="{{ url_for('static', filename='video/bg_video.mp4') }}" type="video/mp4">
+      </video>
+    </div>
+
+    <div class="card">
+      <div class="inner-box" id="card">
+        <div class="card-front">
+          <h2>प्रवेश करा</h2>
+          <form id="login-form">
+            <input type="email" class="input-box" id="login-email" placeholder="तुमचा ईमेल आयडी टाका " required>
+            <input type="password" class="input-box" id="login-password" placeholder="गुप्त शब्द अथवा संख्यां टाका " required>
+            <div class="remember-row">
+              <input type="checkbox" id="remember-me"><span>मला लक्षात ठेवा</span>
+            </div>
+            <button type="submit" class="submit-btn">प्रस्तुत करा</button>
+          </form>
+          <div class="error-message" id="login-error"></div>
+          <div class="success-message" id="login-success"></div>
+          <button type="button" class="btn" onclick="openRegister()">मी नवीन आहे</button>
+          <a href="#">गुप्त शब्द अथवा संख्यां विसरला?</a>
+        </div>
+
+        <div class="card-back">
+          <h2>नोंदणी</h2>
+          <form id="register-form">
+            <input type="text" class="input-box" id="register-name" placeholder="तुमचं नाव टाका" required>
+            <input type="email" class="input-box" id="register-email" placeholder="तुमचा ईमेल आयडी टाका" required>
+            <input type="password" class="input-box" id="register-password" placeholder="गुप्त शब्द अथवा संख्यां टाका " required>
+            <div class="remember-row">
+              <input type="checkbox" id="register-remember"><span>मला लक्षात ठेवा</span>
+            </div>
+            <button type="submit" class="submit-btn">प्रस्तुत करा</button>
+          </form>
+          <div class="error-message" id="register-error"></div>
+          <div class="success-message" id="register-success"></div>
+          <button type="button" class="btn" onclick="openLogin()">माझे खाते आहे</button>
+          <a href="#">गुप्त शब्द अथवा संख्यां विसरला?</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="update-password-modal">
+    <div class="modal-content">
+      <button class="close-modal" onclick="hideUpdatePassword()">
+        <i class="fas fa-times"></i>
+      </button>
+      
+      <div class="modal-header">
+        <h2>गुप्त शब्द अथवा संख्यां बदला</h2>
+        <p>तुमचा सध्याचा गुप्त शब्द अथवा संख्यां प्रविष्ट करा आणि एक नवीन प्रविष्ट करा</p>
+      </div>
+      
+      <form id="update-password-form">
+        <div class="form-group">
+          <label class="form-label">सध्याचा गुप्त शब्द अथवा संख्यां</label>
+          <div class="input-with-icon">
+            <input type="password" class="form-input" id="current-password" placeholder="सध्याचा गुप्त शब्द अथवा संख्यां प्रविष्ट करा" required>
+            <button type="button" class="toggle-password" onclick="togglePassword('current-password')">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">नवीन गुप्त शब्द अथवा संख्यां टाका </label>
+          <div class="input-with-icon">
+            <input type="password" class="form-input" id="new-password" placeholder="नवीन गुप्त शब्द अथवा संख्यां प्रविष्ट करा" required>
+            <button type="button" class="toggle-password" onclick="togglePassword('new-password')">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+          <div class="password-strength">
+            <div class="password-strength-bar" id="new-password-strength"></div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">नवीन गुप्त शब्द अथवा संख्यां पुष्टी करा</label>
+          <div class="input-with-icon">
+            <input type="password" class="form-input" id="confirm-password" placeholder="वीन गुप्त शब्द अथवा संख्यां पुष्टी करा" required>
+            <button type="button" class="toggle-password" onclick="togglePassword('confirm-password')">
+              <i class="fas fa-eye"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" onclick="hideUpdatePassword()">रद्द करा</button>
+          <button type="submit" class="btn-update">गुप्त शब्द अथवा संख्यां बदला</button>
+        </div>
+      </form>
+      
+      <div class="error-message" id="update-password-error"></div>
+      <div class="success-message" id="update-password-success"></div>
+    </div>
+  </div>
+
+      <div class="modal-overlay" id="history-modal">
+      <div class="modal-content">
+        <button class="close-modal" onclick="hideHistory()">
+          <i class="fas fa-times"></i>
+        </button>
+        
+        <div class="modal-header">
+          <h2>Prediction History</h2>
+          <p>Your recent disease predictions</p>
+        </div>
+        
+        <div class="history-content" id="history-content" style="max-height: 400px; overflow-y: auto;">
+          <div class="no-history" id="no-history" style="text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.7);">
+            <i class="fas fa-history" style="font-size: 48px; margin-bottom: 15px;"></i>
+            <p>No prediction history found</p>
+          </div>
+        </div>
+        
+        <div class="modal-actions" style="justify-content: center;">
+          <button type="button" class="btn-cancel" onclick="hideHistory()">Close</button>
+        </div>
+      </div>
+    </div>
+
+  <footer>
+    <p>नवीनतम माहितीसाठी सोशल मीडियावर आम्हाला फॉलो करा:</p>
+    <div class="social-icons">
+      <a href="https://www.instagram.com/me_ek_shetkari07?igsh=YmhoY2Zqb2pxdjU5" target="_blank"><img src="{{ url_for('static', filename='icons/instagram.png') }}" alt="Instagram"></a>
+      <a href="https://youtube.com/@agventureurbanfarming?si=AF-t77rHaACI4lJz" target="_blank"><img src="{{ url_for('static', filename='icons/youtube.png') }}" alt="YouTube"></a>
+      <a href="https://www.facebook.com/groups/plant.health.pests.and.diseases/" target="_blank"><img src="{{ url_for('static', filename='icons/facebook.png') }}" alt="Facebook"></a>
+    </div>
+  </footer>
+
+  <script>
+    // DOM elements
+    const card = document.getElementById("card");
+    const loginNavItem = document.getElementById("login-nav-item");
+    const userProfileNavItem = document.getElementById("user-profile-nav-item");
+    const userAvatar = document.getElementById("user-avatar");
+    const userName = document.getElementById("user-name");
+    const dropdownMenu = document.getElementById("dropdown-menu");
+    const updatePasswordModal = document.getElementById("update-password-modal");
+
+    // Form elements
+    const loginForm = document.getElementById("login-form");
+    const registerForm = document.getElementById("register-form");
+    const updatePasswordForm = document.getElementById("update-password-form");
+
+    // Check if user is already logged in (from localStorage)
+    document.addEventListener('DOMContentLoaded', function() {
+      const loggedInUser = localStorage.getItem('loggedInUser');
+      if (loggedInUser) {
+        const user = JSON.parse(loggedInUser);
+        showUserProfile(user);
+      }
+    });
+
+    // Card flip functions
+    function openRegister() {
+      card.style.transform = "rotateY(-180deg)";
+    }
+
+    function openLogin() {
+      card.style.transform = "rotateY(0deg)";
+    }
+
+    function showLoginForm() {
+      openLogin();
+      card.style.display = "block";
+    }
+
+    // Email validation function
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    // Registration form submission
+    registerForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('register-name').value;
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+      
+      const errorElement = document.getElementById('register-error');
+      const successElement = document.getElementById('register-success');
+      
+      // Validate email
+      if (!isValidEmail(email)) {
+        errorElement.textContent = "Please enter a valid email address";
+        errorElement.style.display = "block";
+        successElement.style.display = "none";
+        return;
+      }
+      
+      // Check if user already exists
+      const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
+      const userExists = existingUsers.some(user => user.email === email);
+      
+      if (userExists) {
+        errorElement.textContent = "User with this email already exists";
+        errorElement.style.display = "block";
+        successElement.style.display = "none";
+        return;
+      }
+      
+      // Save user to localStorage
+      const newUser = {
+        name: name,
+        email: email,
+        password: password,
+        avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=2e7d32&color=fff`
+      };
+      
+      existingUsers.push(newUser);
+      localStorage.setItem('users', JSON.stringify(existingUsers));
+      
+      // Show success message
+      successElement.textContent = "Registration successful! You can now login.";
+      successElement.style.display = "block";
+      errorElement.style.display = "none";
+      
+      // Clear form
+      registerForm.reset();
+      
+      // Switch to login form after 2 seconds
+      setTimeout(() => {
+        openLogin();
+      }, 2000);
+    });
+
+    // Login form submission
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      
+      const errorElement = document.getElementById('login-error');
+      const successElement = document.getElementById('login-success');
+      
+      // Validate email
+      if (!isValidEmail(email)) {
+        errorElement.textContent = "Please enter a valid email address";
+        errorElement.style.display = "block";
+        successElement.style.display = "none";
+        return;
+      }
+      
+      // Check if user exists and password matches
+      const existingUsers = JSON.parse(localStorage.getItem('users') || '[]');
+      const user = existingUsers.find(user => user.email === email);
+      
+      if (!user) {
+        errorElement.textContent = "No account found with this email. Please register first.";
+        errorElement.style.display = "block";
+        successElement.style.display = "none";
+        return;
+      }
+      
+      if (user.password !== password) {
+        errorElement.textContent = "Incorrect password";
+        errorElement.style.display = "block";
+        successElement.style.display = "none";
+        return;
+      }
+      
+      // Login successful
+      localStorage.setItem('loggedInUser', JSON.stringify(user));
+      
+      // Show success message
+      successElement.textContent = "Login successful!";
+      successElement.style.display = "block";
+      errorElement.style.display = "none";
+      
+      // Hide login form and show user profile
+      setTimeout(() => {
+        card.style.display = "none";
+        showUserProfile(user);
+      }, 1000);
+    });
+
+    // Show user profile in navigation
+    function showUserProfile(user) {
+      loginNavItem.style.display = "none";
+      userProfileNavItem.style.display = "flex";
+      userName.textContent = user.name;
+      
+      // Set user avatar
+      userAvatar.innerHTML = '';
+      const img = document.createElement('img');
+      img.src = user.avatar;
+      img.alt = user.name;
+      userAvatar.appendChild(img);
+    }
+
+    // Toggle dropdown menu
+    userProfileNavItem.addEventListener('click', function(e) {
+      e.stopPropagation();
+      dropdownMenu.classList.toggle('show');
+    });
+
+    // Close dropdown when clicking elsewhere
+    document.addEventListener('click', function() {
+      dropdownMenu.classList.remove('show');
+    });
+
+    // Toggle password visibility
+    function togglePassword(inputId) {
+      const input = document.getElementById(inputId);
+      const icon = input.parentNode.querySelector('.toggle-password i');
+      
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+
+    // Password strength indicator
+    function checkPasswordStrength(password, strengthBarId) {
+      const strengthBar = document.getElementById(strengthBarId);
+      let strength = 0;
+      
+      if (password.length >= 8) strength++;
+      if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+      if (password.match(/\d/)) strength++;
+      if (password.match(/[^a-zA-Z\d]/)) strength++;
+      
+      strengthBar.className = 'password-strength-bar';
+      
+      if (password.length === 0) {
+        strengthBar.style.width = '0%';
+      } else if (strength <= 1) {
+        strengthBar.classList.add('password-weak');
+      } else if (strength <= 3) {
+        strengthBar.classList.add('password-medium');
+      } else {
+        strengthBar.classList.add('password-strong');
+      }
+    }
+
+    // Event listeners for password strength
+    document.getElementById('new-password').addEventListener('input', function() {
+      checkPasswordStrength(this.value, 'new-password-strength');
+    });
+
+    // Show update password modal
+    function showUpdatePassword() {
+      updatePasswordModal.style.display = "flex";
+      dropdownMenu.classList.remove('show');
+    }
+
+    // Hide update password modal
+    function hideUpdatePassword() {
+      updatePasswordModal.style.display = "none";
+      document.getElementById('update-password-error').style.display = "none";
+      document.getElementById('update-password-success').style.display = "none";
+      updatePasswordForm.reset();
+      
+      // Reset password strength bars
+      document.getElementById('new-password-strength').style.width = '0%';
+      document.getElementById('new-password-strength').className = 'password-strength-bar';
+    }
+
+    // Update password form submission
+    updatePasswordForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const currentPassword = document.getElementById('current-password').value;
+      const newPassword = document.getElementById('new-password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+      
+      const errorElement = document.getElementById('update-password-error');
+      const successElement = document.getElementById('update-password-success');
+      
+      // Get logged in user
+      const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+      
+      // Check if current password is correct
+      if (currentPassword !== loggedInUser.password) {
+        errorElement.textContent = "Current password is incorrect";
+        errorElement.style.display = "block";
+        successElement.style.display = "none";
+        return;
+      }
+      
+      // Check if new password and confirm password match
+      if (newPassword !== confirmPassword) {
+        errorElement.textContent = "New passwords do not match";
+        errorElement.style.display = "block";
+        successElement.style.display = "none";
+        return;
+      }
+      
+      // Update password in localStorage
+      const users = JSON.parse(localStorage.getItem('users') || '[]');
+      const userIndex = users.findIndex(user => user.email === loggedInUser.email);
+      
+      if (userIndex !== -1) {
+        users[userIndex].password = newPassword;
+        localStorage.setItem('users', JSON.stringify(users));
+        
+        // Update logged in user
+        loggedInUser.password = newPassword;
+        localStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
+        
+        // Show success message
+        successElement.textContent = "Password updated successfully!";
+        successElement.style.display = "block";
+        errorElement.style.display = "none";
+        
+        // Hide modal after 2 seconds
+        setTimeout(() => {
+          hideUpdatePassword();
+        }, 2000);
+      }
+    });
+
+    // Logout function
+    function logout() {
+      localStorage.removeItem('loggedInUser');
+      userProfileNavItem.style.display = "none";
+      loginNavItem.style.display = "list-item";
+      card.style.display = "block";
+      openLogin();
+      dropdownMenu.classList.remove('show');
+    }
+
+
+    // तुमचे Existing toggleForm आणि Login/Register Functions जसेच्या तसे ठेवा
+    // ...
+    function toggleForm() { /* ... तुमचा कोड ... */ }
+    function registerUser() { /* ... तुमचा कोड ... */ }
+    function loginUser() { /* ... तुमचा कोड ... */ }
+    function logoutUser() { /* ... तुमचा कोड ... */ }
+    // ...
+    
+
+    // तुमचे Existing toggleForm आणि Login/Register Functions जसेच्या तसे ठेवा
+    // ... (toggleForm, registerUser, loginUser, logoutUser फंक्शन्स) ...
+    
+    // Show history modal
+    function showHistory() {
+        const historyModal = document.getElementById('history-modal');
+        historyModal.style.display = "flex";
+        // तुम्हाला dropdownMenu नसेल तर ही ओळ काढून टाका: dropdownMenu.classList.remove('show');
+        loadHistory();
+    }
+
+    // Hide history modal
+    function hideHistory() {
+        const historyModal = document.getElementById('history-modal');
+        historyModal.style.display = "none";
+    }
+
+    
+// Load prediction history (API Call) - 💡 हा भाग सुधारित केला आहे
+async function loadHistory() {
+    const historyContent = document.getElementById('history-content');
+    const noHistory = document.getElementById('no-history');
+    
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    
+    // 🌟 FIX: इथे loggedInUser ऑब्जेक्ट आणि त्यात email प्रॉपर्टी दोन्ही तपासा 🌟
+    if (!loggedInUser || !loggedInUser.email) {
+        historyContent.innerHTML = `<div style="text-align: center; padding: 40px 20px; color: #ffcccb;">कृपया हिस्ट्री पाहण्यासाठी लॉग इन करा.</div>`;
+        return;
+    }
+    
+    // आता ईमेल उपलब्ध आहे, तो व्हेरिएबलमध्ये स्टोअर करा
+    const userEmail = loggedInUser.email;
+
+    historyContent.innerHTML = '<div style="text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.7);"><i class="fas fa-spinner fa-spin" style="font-size: 32px;"></i><p>हिस्ट्री लोड करत आहे...</p></div>';
+    noHistory.style.display = 'none';
+    
+    try {
+        const response = await fetch('/api/get_history', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            // 🌟 FIX: body मध्ये योग्य ईमेल पाठवा
+            body: JSON.stringify({ email: userEmail }) 
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Server responded with status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            const userHistory = result.history || [];
+            
+            // 🍄 रोगाच्या माहितीसाठी एक Local Data Object तयार करा (app.py मधल्या data वरून)
+            const diseaseInfo = {
+                "Pepper__bell___Bacterial_spot": { "type": "Bacterial", "treatment": "कॉपर ऑक्सीक्लोराइड फवारणी" },
+                "Pepper__bell___healthy": { "type": "Healthy", "treatment": "नियमित निरीक्षण" },
+                "Potato___Early_blight": { "type": "Fungal", "treatment": "मॅन्कोझेब किंवा क्लोरोथॅलोनील फवारणी" },
+                "Potato___Late_blight": { "type": "Fungal", "treatment": "रिडोमिल गोल्ड फवारणी" },
+                "Potato___healthy": { "type": "Healthy", "treatment": "कीडरोग नियंत्रण" },
+                "Tomato_Bacterial_spot": { "type": "Bacterial", "treatment": "स्ट्रेप्टोमायसिन किंवा कॉपर फवारणी" },
+                "Tomato_Early_blight": { "type": "Fungal", "treatment": "मॅन्कोझेब फवारणी" },
+                "Tomato_Late_blight": { "type": "Fungal", "treatment": "रिडोमिल फवारणी" },
+                "Tomato_Leaf_Mold": { "type": "Fungal", "treatment": "क्लोरोथॅलोनील किंवा कॉपर फवारणी" },
+                "Tomato_Septoria_leaf_spot": { "type": "Fungal", "treatment": "मॅन्कोझेब फवारणी" },
+                "Tomato_Spider_mites_Two_spotted_spider_mite": { "type": "कीड (Mite)", "treatment": "अॅकरा किंवा प्रोपरगाइट फवारणी" },
+                "Tomato__Target_Spot": { "type": "Fungal", "treatment": "क्लोरोथॅलोनील फवारणी" },
+                "Tomato__Tomato_YellowLeaf__Curl_Virus": { "type": "Viral", "treatment": "व्हायरसचा इलाज नाही (कीड नियंत्रण)" },
+                "Tomato__Tomato_mosaic_virus": { "type": "Viral", "treatment": "संक्रमित झाडे हटवा" },
+                "Tomato_healthy": { "type": "Healthy", "treatment": "गरज नाही" }
+            };
+
+            
+            if (userHistory.length === 0) {
+                noHistory.style.display = 'block';
+                historyContent.innerHTML = '';
+                return;
+            }
+            
+            noHistory.style.display = 'none';
+            
+            // Display history items
+            let historyHTML = '';
+            userHistory.forEach((prediction) => {
+                const imageUrl = prediction.image ? `/static/uploads/${prediction.image}` : '';
+                
+                // रोगाची माहिती मिळवा
+                const info = diseaseInfo[prediction.disease] || { type: "माहिती नाही", treatment: "कृपया तपासा" };
+                const diseaseNameClean = prediction.disease.replace(/_/g, ' ');
+                
+                historyHTML += `
+                    <div class="history-item"> 
+                        ${imageUrl ? `<img src="${imageUrl}" class="history-image" alt="Predicted plant" onerror="this.onerror=null;this.src='/static/icons/placeholder.png';">` : ''}
+                        
+                        <div class="history-details" style="flex-grow: 1;">
+                            <div class="history-item-header" style="margin-bottom: 3px;">
+                                <div class="history-disease" style="font-size: 16px; color: #ffeb3b; ">🎯 **${diseaseNameClean}**</div>
+                                <div class="history-date">${new Date(prediction.timestamp).toLocaleString('mr-IN', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+                            </div>
+                            
+                            <p style="margin: 5px 0 0 0; font-size: 13px; color: #fff;">
+                                🦠 **प्रकार:** ${info.type}
+                            </p>
+                            <p style="margin: 2px 0 0 0; font-size: 13px; color: #90ee90;">
+                                💊 **उपचार:** ${info.treatment}
+                            </p>
+                            </div>
+                    </div>
+                `;
+            });
+            
+            historyHTML += `
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="clear-history-btn" onclick="clearHistory()">
+                        <i class="fas fa-trash"></i> History क्लिअर करा
+                    </button>
+                </div>
+            `;
+            
+            historyContent.innerHTML = historyHTML;
+        } else {
+             // ❌ हा भाग 'Missing email' एरर दर्शवत आहे.
+            historyContent.innerHTML = `<div style="text-align: center; padding: 40px 20px; color: #ffcccb;">Error loading history: ${result.message}</div>`;
+        }
+    } catch (error) {
+        console.error('Error fetching history:', error);
+        historyContent.innerHTML = `<div style="text-align: center; padding: 40px 20px; color: #ffcccb;">Network Error. Could not load history. (Details: ${error.message})</div>`;
+    }
+}
+
+    // Clear prediction history (API Call)
+    async function clearHistory() {
+        const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+        if (!loggedInUser) return;
+        
+        if (confirm('तुम्हाला सर्व prediction history क्लिअर करायची आहे?')) {
+            try {
+                const response = await fetch('/api/clear_history', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: loggedInUser.email })
+                });
+
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    alert('इतिहास यशस्वीरित्या पुसून टाकला गेला  !');
+                    loadHistory(); 
+                } else {
+                    alert('इतिहास पुसून टाकण्यास अयशस्वी: ' + result.message);
+                }
+
+            } catch (error) {
+                alert('नेटवर्क त्रुटी. इतिहास पुसून टाकण्यास  अयशस्वी.');
+                console.error('Error clearing history:', error);
+            }
+        }
+    }
+
+    // Function to add new prediction to history (API Call)
+    async function addToHistory(predictionData) {
+        const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+        if (!loggedInUser) return;
+
+        try {
+            const response = await fetch('/api/save_history', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: loggedInUser.email,
+                    disease: predictionData.disease,
+                    image: predictionData.image
+                })
+            });
+
+            const result = await response.json();
+            if (result.status !== 'success') {
+                console.error('Failed to save history:', result.message);
+            }
+        } catch (error) {
+            console.error('Error saving history:', error);
+        }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            /* login.html प्रमाणे असलेली बॅकग्राऊंड इमेज Flask च्या url_for() चा वापर करून सेट केली. */
+            background: url('{{ url_for("static", filename="bg_image/predict.jpg") }}') no-repeat center center fixed;
+            background-size: cover;
+            /* ही स्टाइल style.css मधील बॅकग्राऊंडला ओव्हरराईड करेल */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">🌱 वनस्पती रोग शोधणे</div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home') }}">मुख्यपृष्ठ</a></li>
+            <li><a href="{{ url_for('index') }}">अंदाज लावा</a></li>
+            <li><a href="{{ url_for('contact') }}">आमच्याशी संपर्क साधा</a></li>
+            <li><a href="{{ url_for('login') }}">प्रवेश करा</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h2>पिकाच्या पानाचे छायाचित्र पाठवा </h2>
+        
+        {% if error %}
+        <div style="color: red; margin: 10px 0;">{{ error }}</div>
+        {% endif %}
+        
+        <!-- 🔽 हा फॉर्म जोडा -->
+        <form method="POST" action="/predict" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" required>
+            <button type="submit">रोग शोधा</button>
+        </form>
+
+        {% if img %}
+        <div class="result">
+            <h3>🖼️ पाठवलेल्या पानाचे छायाचित्र:</h3>
+            <img src="{{ url_for('static', filename='uploads/' + img) }}" alt="Uploaded Leaf" width="250">
+        </div>
+        {% endif %}
+
+        {% if prediction %}
+        <div class="output">
+            <h3>🧩 ओळखलेला रोग: {{ prediction }}</h3>
+
+            {% if solution %}
+            <div class="solution">
+                <p>🌿 <b>रोगाचं ओळख आणि कारण:</b> {{ solution.cause }}</p>
+                <p>🦠 <b>रोगाचा प्रकार:</b> {{ solution.type }}</p>
+                <p>📊 <b>रोगाचं प्रमाण:</b> {{ solution.severity }}</p>
+                <p>⚠️ <b>काळजी न घेतल्यास परिणाम:</b> {{ solution.effect }}</p>
+                <p>💧 <b>पाण्याचे प्रमाण:</b> {{ solution.water }}</p>
+                <p>💊 <b>उपाय / फवारणी:</b> {{ solution.treatment }}</p>
+                <p>🌾 <b>अतिरिक्त माहिती:</b> {{ solution.extra }}</p>
+            </div>
+            {% else %}
+            <div class="solution">
+                <p>🌿 <b>रोगाचं ओळख आणि कारण:</b> माहिती उपलब्ध नाही.</p>
+                <p>🦠 <b>रोगाचा प्रकार:</b> माहिती उपलब्ध नाही.</p>
+                <p>📊 <b>रोगाचं प्रमाण:</b> माहिती उपलब्ध नाही.</p>
+                <p>⚠️ <b>काळजी न घेतल्यास परिणाम:</b> माहिती उपलब्ध नाही.</p>
+                <p>💧 <b>पाण्याचे प्रमाण:</b> माहिती उपलब्ध नाही.</p>
+                <p>💊 <b>उपाय / फवारणी:</b> कृपया कृषी तज्ज्ञांचा सल्ला घ्या.</p>
+                <p>🌾 <b>अतिरिक्त माहिती:</b> माहिती उपलब्ध नाही.</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+
+    
+
+    <footer>
+        <p>नवीनतम माहितीसाठी सोशल मीडियावर आम्हाला फॉलो करा:</p>
+        <div class="social-icons">
+            <a href="https://www.instagram.com/me_ek_shetkari07?igsh=YmhoY2Zqb2pxdjU5" target="_blank">
+                <img src="{{ url_for('static', filename='icons/instagram.png') }}" alt="Instagram">
+            </a>
+            <a href="https://youtube.com/@agventureurbanfarming?si=AF-t77rHaACI4lJz" target="_blank">
+                <img src="{{ url_for('static', filename='icons/youtube.png') }}" alt="YouTube">
+            </a>
+            <a href="https://www.facebook.com/groups/plant.health.pests.and.diseases/" target="_blank">
+                <img src="{{ url_for('static', filename='icons/facebook.png') }}" alt="Facebook">
+            </a>
+        </div>
+    </footer>
+
+
+    <script>
+    // Function to add new prediction to history (API Call)
+    async function addToHistory(predictionData) {
+        const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+        if (!loggedInUser) return;
+
+        try {
+            const response = await fetch('/api/save_history', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: loggedInUser.email,
+                    disease: predictionData.disease,
+                    image: predictionData.image
+                })
+            });
+
+            const result = await response.json();
+            if (result.status !== 'success') {
+                console.error('Failed to save history:', result.message);
+            }
+        } catch (error) {
+            console.error('Error saving history:', त्रुटी);
+        }
+    }
+</script>
+
+
+{% if prediction and img %}
+<script>
+    // LocalStorage मधून loggedInUser मिळवा
+    const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+    
+    // जर prediction result present असेल आणि user logged in असेल तर history मध्ये add करा
+    if (loggedInUser && typeof addToHistory === 'function') {
+        addToHistory({
+            disease: "{{ prediction }}",
+            image: "{{ img }}" 
+        });
+    }
+</script>
+{% endif %}
+
+</body>
+</html>
